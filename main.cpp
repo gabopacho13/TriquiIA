@@ -1,9 +1,14 @@
+
+//Gabriel Coronado
+//Brayan Fajardo
+//Mateo Henao
 #include <iostream>
 #include "grafo.h"
 #include "espacio.h"
 
 using namespace std;
 
+//Esta funcion conecta cada espacio con los demás relevantes en el triqui (horizontales, verticales y Diagonales si aplican)
 void crearTablero(Grafo<Espacio>* tablero)
 {
     for (int i = 0; i < 9; i++)
@@ -15,6 +20,7 @@ void crearTablero(Grafo<Espacio>* tablero)
     }
     for (int i = 0; i < 9; i++)
     {
+        //Si Aristas horizontales para los espacios a la izquierda
         if ((i%3)== 0)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1);
