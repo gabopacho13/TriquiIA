@@ -178,45 +178,55 @@ void turnoMaquinaMax(Grafo<Espacio>* tablero)
             //cambiar los valores de las aristas conectadas a i
             alterarAristas(tablero, i, 1);
             int sumaHeuristica = 0;
-            //Definir que tan beneficiosa sería esa jugada para la maquina comparando
+            //Definir que tan beneficiosa sería esa jugada para la maquina comparando con los espacios vacios adyacentes.
             for (int j = 0; j < 9; j++)
             {
                 if (tablero->obtenerDato(j).caracter == '_' || tablero->obtenerDato(j).caracter == 'X')
                     sumaHeuristica += tablero->buscarArista(tablero->obtenerDato(i), tablero->obtenerDato(j));
             }
+            //Calcular que tanto se minimizó el riesgo con la supuesta jugada
             turnoMaquinaMin(tablero, i, sumaHeuristica);
+            //Almacenar los datos de la jugada si esta ha sido la mejor hasta ahora
             if (sumaHeuristica > maximo)
             {
                 maximo = sumaHeuristica;
                 indiceMejor = i;
             }
+            //Devolver las aristas a su valor inicial
             alterarAristas(tablero, i, -1);
         }
     }
     while (true)
     {
+        //Realizar la jugada determinada
         if (tablero->obtenerDato(indiceMejor).caracter == '_')
         {
             Espacio aux;
             aux.numEspacio = indiceMejor;
             aux.caracter = 'X';
+            //Actualizar el tablero
             tablero->cambiarVertice(tablero->obtenerDato(indiceMejor), aux);
             alterarAristas(tablero, indiceMejor, 1);
             break;
         }
         else
+            //Buscar otra jugada en caso de que no se haya determinado un mejor caso y el espacio seleccionado esté ocupado
             indiceMejor++;
     }
 }
 
+//Revisa el estado actual del tablero
 char verificarGanador(Grafo<Espacio>* tablero)
 {
     int contDiagDer = 0;
     int contDiagIzq = 0;
+    //Revisar el contenido de todos los espacios
+    //Contador de filas
     for (int i = 0; i < 3; i++)
     {
         int contHor = 0;
         int contVert = 0;
+        //Contador de columnas
         for (int j = 0; j < 3; j++)
         {
             if (tablero->obtenerDato(i+3*j).caracter == 'O')
@@ -236,10 +246,13 @@ char verificarGanador(Grafo<Espacio>* tablero)
             if (i == 2-j && tablero->obtenerDato(3*i+j).caracter == 'X')
                 contDiagIzq++;
         }
+        //Caso: Maquina gana
         if (contVert == 3 || contHor == 3 || contDiagDer == 3 || contDiagIzq == 3)
             return 'X';
+        //Caso: Jugador gana
         if (contVert == -3 || contHor == -3 || contDiagDer == -3 || contDiagIzq == -3)
             return 'O';
+        //Caso: Jugador a punto de lograr un triqui vertical. Cambiar valor de dos aristas en esa columna para anunciar estado de alerta
         if (contVert == -2)
         {
             tablero->cambiarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+3), -40);
@@ -247,6 +260,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
             tablero->cambiarArista(tablero->obtenerDato(i+3), tablero->obtenerDato(i), -40);
             tablero->cambiarArista(tablero->obtenerDato(i+6), tablero->obtenerDato(i), -40);
         }
+        //Caso: Jugador a punto de lograr un triqui horizontal. Cambiar valor de dos aristas en esa columna para anunciar estado de alerta
         if (contHor == -2)
         {
             tablero->cambiarArista(tablero->obtenerDato(3*i), tablero->obtenerDato(3*i+1), -40);
@@ -254,6 +268,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
             tablero->cambiarArista(tablero->obtenerDato(3*i+1), tablero->obtenerDato(3*i), -40);
             tablero->cambiarArista(tablero->obtenerDato(3*i+2), tablero->obtenerDato(3*i), -40);
         }
+        //Caso: Maquina a punto de lograr un triqui vertical. Cambiar valor de dos aristas en esa columna para anunciar estado de ventaja
         if (contVert == 2)
         {
             tablero->cambiarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+3), 10);
@@ -261,6 +276,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
             tablero->cambiarArista(tablero->obtenerDato(i+3), tablero->obtenerDato(i), 10);
             tablero->cambiarArista(tablero->obtenerDato(i+6), tablero->obtenerDato(i), 10);
         }
+        //Caso: Maquina a punto de lograr un triqui vertical. Cambiar valor de dos aristas en esa columna para anunciar estado de ventaja
         if (contHor == 2)
         {
             tablero->cambiarArista(tablero->obtenerDato(3*i), tablero->obtenerDato(3*i+1), 10);
@@ -269,6 +285,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
             tablero->cambiarArista(tablero->obtenerDato(3*i+2), tablero->obtenerDato(3*i), 10);
         }
     }
+    //Caso: Jugador a punto de lograr un triqui en la diagonal 0-4-8. Cambiar valor de dos aristas en esa diagonal para anunciar estado de alerta
     if (contDiagDer == -2)
     {
         tablero->cambiarArista(tablero->obtenerDato(0), tablero->obtenerDato(4), -40);
@@ -276,6 +293,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
         tablero->cambiarArista(tablero->obtenerDato(4), tablero->obtenerDato(0), -40);
         tablero->cambiarArista(tablero->obtenerDato(8), tablero->obtenerDato(0), -40);
     }
+    //Caso: Jugador a punto de lograr un triqui en la diagonal 2-4-6. Cambiar valor de dos aristas en esa diagonal para anunciar estado de alerta
     if (contDiagIzq == -2)
     {
         tablero->cambiarArista(tablero->obtenerDato(2), tablero->obtenerDato(4), -40);
@@ -283,6 +301,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
         tablero->cambiarArista(tablero->obtenerDato(6), tablero->obtenerDato(2), -40);
         tablero->cambiarArista(tablero->obtenerDato(4), tablero->obtenerDato(2), -40);
     }
+    //Caso: Maquina a punto de lograr un triqui en la diagonal 0-4-8. Cambiar valor de dos aristas en esa diagonal para anunciar estado de ventaja
     if (contDiagDer == 2)
     {
         tablero->cambiarArista(tablero->obtenerDato(0), tablero->obtenerDato(4), 10);
@@ -290,6 +309,7 @@ char verificarGanador(Grafo<Espacio>* tablero)
         tablero->cambiarArista(tablero->obtenerDato(4), tablero->obtenerDato(0), 10);
         tablero->cambiarArista(tablero->obtenerDato(8), tablero->obtenerDato(0), 10);
     }
+    //Caso: Maquina a punto de lograr un triqui en la diagonal 2-4-6. Cambiar valor de dos aristas en esa diagonal para anunciar estado de ventaja
     if (contDiagIzq == 2)
     {
         tablero->cambiarArista(tablero->obtenerDato(2), tablero->obtenerDato(4), 10);
@@ -300,20 +320,24 @@ char verificarGanador(Grafo<Espacio>* tablero)
     return '_';
 }
 
+//Permite al jugador realizar su jugada
 void turnoJugador(Grafo<Espacio>* tablero)
 {
     int valor = 0;
     cout << "\nTu turno!! Escribe un numero de 1 a 9 para poner tu O" << endl;
     while (true){
         cin >> valor;
+        //Verificar que el espacio no esté ocupado
         if (tablero->obtenerDato(valor-1).caracter != '_'){
             cout << "Ese ya esta ocupado! escoje un espacio vacio" << endl;
             continue;
         }
+        //Actualizar datos del tablero
         Espacio aux;
         aux.caracter = 'O';
         aux.numEspacio = valor-1;
         tablero->cambiarVertice(tablero->obtenerDato(valor-1), aux);
+        //Asignar nuevo valor a las aristas que rodean el espacio seleccionado
         alterarAristas(tablero, valor-1, -4);
         break;
     }
@@ -324,7 +348,16 @@ int main()
     Grafo<Espacio>* tablero = new Grafo<Espacio>();
     char ganador = '_';
     crearTablero(tablero);
-    cout << "\nBienvenido al triqui! Juguemos. Yo sere las X y tu las O. Yo empiezo!" << endl;
+    cout << "\nBienvenido al triqui! Modo de uso:" << endl;
+    //Imprimir modo de uso
+    for (int i = 0; i < 3; i++){
+        for (int j = 0; j < 3; j++){
+            cout << 3*i+j << " ";
+        }
+        cout << endl;
+    }
+    cout << "Juguemos. Yo sere las X y tu las O. Yo empiezo!" << endl;
+    //Comenzar juego
     while (true)
     {
         turnoMaquinaMax(tablero);
@@ -348,6 +381,7 @@ int main()
         cout << "Has ganado!" << endl;
     else
         cout << "Empatamos!" << endl;
+    cout << "Si quieres volver a jugar, te estaré esperando!" << endl;
     delete tablero;
     return 0;
 }
