@@ -157,20 +157,28 @@ void turnoMaquinaMin(Grafo<Espacio>* tablero, int indiceX, int &sumaHeuristica)
             alterarAristas(tablero, i, 4);
         }
     }
+    //Restar el mínimo a la suma heurística
     sumaHeuristica += minimo;
 }
 
+//Comienza el turno de la maquina
+//La maquina revisa cada espacio y los valores de las aristas conectadas (Que determinan el valor heurístico de la jugada) y suma el valor de la mejor jugada a la sumaHeuristica
+//A la jugada se le resta lo calculado durante la minimización (turnoMaquinaMax)
 void turnoMaquinaMax(Grafo<Espacio>* tablero)
 {
     cout << "Es mi turno!!" << endl;
     int maximo = -999;
     int indiceMejor = 1;
+    //Revisar todos los espacios disponibles
     for (int i = 0; i < 9; i++)
     {
+        //Simular una jugada de la maquina en el espacio i
         if (tablero->obtenerDato(i).caracter == '_')
         {
+            //cambiar los valores de las aristas conectadas a i
             alterarAristas(tablero, i, 1);
             int sumaHeuristica = 0;
+            //Definir que tan beneficiosa sería esa jugada para la maquina comparando
             for (int j = 0; j < 9; j++)
             {
                 if (tablero->obtenerDato(j).caracter == '_' || tablero->obtenerDato(j).caracter == 'X')
