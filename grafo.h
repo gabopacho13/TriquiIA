@@ -27,22 +27,22 @@ public:
     bool cambiarArista(T vOrigen, T vDestino, double costo);
     bool eliminarVertice(T vertice);
     bool eliminarArista(T vOrigen, T vDestino);
-    vector<int> cDebilmenteConectado(T vertice);
-    vector<int> cFuertementeConectado(T vertice);
-    vector<int> ascendientes(T vertice);
-    vector<int> descendientes(T vertice);
-    void recorridoPlano();
-    void recorridoProfundidad(T vInicio);
-    void recorridoAnchura(T vInicio);
-    void recorridoEuler();
-    shared_ptr<Grafo<T>> algoritmoPrim(T vInicio);
-    vector<par> algoritmoDijkstra(T vInicio);
-    shared_ptr<Grafo<T>> algoritmoKrustal();
-    void floydWarshall(vector < vector < par > >& resultado);
+    vector<int> cDebilmenteConectado(T vertice); //Funcion no utilizada
+    vector<int> cFuertementeConectado(T vertice); //Funcion no utilizada
+    vector<int> ascendientes(T vertice); //Funcion no utilizada
+    vector<int> descendientes(T vertice); //Funcion no utilizada
+    void recorridoPlano(); //Funcion no utilizada
+    void recorridoProfundidad(T vInicio); //Funcion no utilizada
+    void recorridoAnchura(T vInicio); //Funcion no utilizada
+    void recorridoEuler(); //Funcion no utilizada
+    shared_ptr<Grafo<T>> algoritmoPrim(T vInicio); //Funcion no utilizada
+    vector<par> algoritmoDijkstra(T vInicio); //Funcion no utilizada
+    shared_ptr<Grafo<T>> algoritmoKrustal(); //Funcion no utilizada
+    void floydWarshall(vector < vector < par > >& resultado); //Funcion no utilizada
 private:
-    vector<int> descendientes(vector<int> componentesConectados, Vertice<T>* vActual);
-    bool esPuente(T vOrigen, int iDestino);
-    void recorridoEuler(Vertice<T>* vActual, int vFinal, vector< vector<par> >& aVisitadas);
+    vector<int> descendientes(vector<int> componentesConectados, Vertice<T>* vActual); //Funcion no utilizada
+    bool esPuente(T vOrigen, int iDestino); //Funcion no utilizada
+    void recorridoEuler(Vertice<T>* vActual, int vFinal, vector< vector<par> >& aVisitadas); //Funcion no utilizada
 };
 
 #include "grafo.hxx"
