@@ -153,7 +153,7 @@ void turnoMaquinaMin(Grafo<Espacio>* tablero, int indiceX, int &sumaHeuristica)
             //almacenar el valor minimo de las posibles jugadas del jugador
             if (posMinimo < minimo)
                 minimo = posMinimo;
-            //Devolver los valores 
+            //Devolver los valores de las aristas a su valor inicial
             alterarAristas(tablero, i, 4);
         }
     }
