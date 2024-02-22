@@ -24,7 +24,7 @@ void crearTablero(Grafo<Espacio>* tablero)
         //Crear aristas horizontales para los espacios de la primera columna
         if ((i%3)== 0)
         {
-            tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1); 
+            tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+2), 1);
         }
         //Crear aristas horizontales para los espacios de la segunda columna
@@ -327,6 +327,11 @@ void turnoJugador(Grafo<Espacio>* tablero)
     cout << "\nTu turno!! Escribe un numero de 1 a 9 para poner tu O" << endl;
     while (true){
         cin >> valor;
+        //Verificar que el espacio exista
+        if (valor < 1 || valor > 9){
+            cout << "Ese espacio no existe! Escoje un espacio del 1 al 9" << endl;
+            continue;
+        }
         //Verificar que el espacio no esté ocupado
         if (tablero->obtenerDato(valor-1).caracter != '_'){
             cout << "Ese ya esta ocupado! escoje un espacio vacio" << endl;
@@ -352,7 +357,7 @@ int main()
     //Imprimir modo de uso
     for (int i = 0; i < 3; i++){
         for (int j = 0; j < 3; j++){
-            cout << 3*i+j << " ";
+            cout << 3*i+j+1 << " ";
         }
         cout << endl;
     }
@@ -381,7 +386,7 @@ int main()
         cout << "Has ganado!" << endl;
     else
         cout << "Empatamos!" << endl;
-    cout << "Si quieres volver a jugar, te estaré esperando!" << endl;
+    cout << "Si quieres volver a jugar, te estare esperando!" << endl;
     delete tablero;
     return 0;
 }
