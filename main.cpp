@@ -18,49 +18,58 @@ void crearTablero(Grafo<Espacio>* tablero)
         espacio.caracter = '_';
         tablero->insertarVertice(espacio);
     }
+    //Crear aristas. Cada arista comienza con un valor de 1. La suma de los valores de las aristas de un espacio es la suma heuristica
     for (int i = 0; i < 9; i++)
     {
-        //Si Aristas horizontales para los espacios a la izquierda
+        //Crear aristas horizontales para los espacios de la primera columna
         if ((i%3)== 0)
         {
-            tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1);
+            tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1); 
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+2), 1);
         }
+        //Crear aristas horizontales para los espacios de la segunda columna
         if ((i%3)== 1)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-1), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+1), 1);
         }
+        //Crear aristas horizontales para los espacios de la tercera columna
         if ((i%3)== 2)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-1), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-2), 1);
         }
+        //Crear aristas verticales para los espacios de la primera fila
         if (i < 3)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+3), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+6), 1);
         }
+        //Crear aristas verticales para los espacios de la segunda fila
         if (i>=3 && i<6)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-3), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+3), 1);
         }
+        //Crear aristas verticales para los espacios de la tercera fila
         if (i >= 6)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-3), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-6), 1);
         }
+        //crear aristas diagonales para el espacio 0
         if (i == 0)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+4), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+8), 1);
         }
+        //Crear aristas diagonales para el espacio 2
         if (i == 2)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+2), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+4), 1);
         }
+        //Crear aristas diagonales para el espacio 4
         if (i == 4)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-4), 1);
@@ -68,11 +77,13 @@ void crearTablero(Grafo<Espacio>* tablero)
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+2), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i+4), 1);
         }
+        //Crear aristas diagonales para el espacio 6
         if (i == 6)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-2), 1);
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-4), 1);
         }
+        //Crear aristas diagonales para el espacio 8
         if (i == 8)
         {
             tablero->insertarArista(tablero->obtenerDato(i), tablero->obtenerDato(i-4), 1);
@@ -81,11 +92,14 @@ void crearTablero(Grafo<Espacio>* tablero)
     }
 }
 
+//Imprime el tablero al jugador
 int imprimirTablero(Grafo<Espacio>* tablero)
 {
     int cont = 0;
+    //Contador de filas
     for (int i = 0; i < 3; i++)
     {
+        //Contador de columnas
         for (int j = 0; j < 3; j++)
         {
             char caracter = tablero->obtenerDato(j + (3*i)).caracter;
@@ -98,6 +112,7 @@ int imprimirTablero(Grafo<Espacio>* tablero)
     return cont;
 }
 
+// cambia el valor de todas las aristas conectadas al espacio en el indice recibido
 void alterarAristas (Grafo<Espacio>* tablero, int indice, double cambio)
 {
     for (int j = 0; j < 9; j++)
@@ -111,17 +126,23 @@ void alterarAristas (Grafo<Espacio>* tablero, int indice, double cambio)
     }
 }
 
+// revisa los espacios disponibles tras simular una X en el espacio indiceX
+// Analiza las posibilidades del jugador usando la heuristica y restando al valor de sumaHeuristica el valor obtenido, dando como resultado el total del análisis
 void turnoMaquinaMin(Grafo<Espacio>* tablero, int indiceX, int &sumaHeuristica)
 {
     int minimo = 999;
     for (int i = 0; i < 9; i++)
     {
+        //Ignorar el espacio donde supuestamente habria una X
         if (i == indiceX)
             continue;
+        //Simular una O en el espacio i si este esta vacio
         if (tablero->obtenerDato(i).caracter == '_')
         {
             int posMinimo = 0;
+            //restar al valor de las aristas conectadas al espacio i
             alterarAristas(tablero, i, -4);
+            //Definir que tan problemática sería la jugada del jugador si pusiera O en el espacio i
             for (int j = 0; j < 9; j++)
             {
                 if (tablero->obtenerDato(j).caracter == '_' || tablero->obtenerDato(j).caracter == 'O')
@@ -129,8 +150,10 @@ void turnoMaquinaMin(Grafo<Espacio>* tablero, int indiceX, int &sumaHeuristica)
                     posMinimo += tablero->buscarArista(tablero->obtenerDato(i), tablero->obtenerDato(j));
                 }
             }
+            //almacenar el valor minimo de las posibles jugadas del jugador
             if (posMinimo < minimo)
                 minimo = posMinimo;
+            //Devolver los valores 
             alterarAristas(tablero, i, 4);
         }
     }
